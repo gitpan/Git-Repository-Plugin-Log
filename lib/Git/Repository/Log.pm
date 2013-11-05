@@ -1,6 +1,6 @@
 package Git::Repository::Log;
 {
-  $Git::Repository::Log::VERSION = '1.309';
+  $Git::Repository::Log::VERSION = '1.310';
 }
 
 use strict;
@@ -55,7 +55,7 @@ sub new {
 
     # author and committer details
     for my $who (qw( author committer )) {
-        $self->{$who} =~ /(.*) <(.*)> (.*) (([-+])(..)(..))/;
+        $self->{$who} =~ /^(.*) <(.*)> (.*) (([-+])(..)(..))$/;
         my @keys = ( "${who}_name", "${who}_email", "${who}_gmtime",
             "${who}_tz" );
         @{$self}{@keys} = ( $1, $2, $3, $4 );
@@ -80,7 +80,7 @@ Git::Repository::Log - Class representing git log data
 
 =head1 VERSION
 
-version 1.309
+version 1.310
 
 =head1 SYNOPSIS
 

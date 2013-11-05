@@ -1,6 +1,6 @@
 package Git::Repository::Log::Iterator;
 {
-  $Git::Repository::Log::Iterator::VERSION = '1.309';
+  $Git::Repository::Log::Iterator::VERSION = '1.310';
 }
 
 use strict;
@@ -60,7 +60,7 @@ sub next {
     my ( $header, $message, $extra ) = ( @records, '', '' );
     chomp $header;
     my @headers = map { chomp; split / /, $_, 2 } split /^(?=\S)/m, $header;
-    s/^ //gm for @headers;
+    s/\n /\n/g for @headers;
     chomp( $message, $extra ) if exists $self->{record};
 
     # create the log object
@@ -85,7 +85,7 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 
 =head1 VERSION
 
-version 1.309
+version 1.310
 
 =head1 SYNOPSIS
 

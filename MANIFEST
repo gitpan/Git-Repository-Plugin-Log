@@ -3,6 +3,7 @@ LICENSE
 MANIFEST
 META.yml
 Makefile.PL
+README
 dist.ini
 lib/Git/Repository/Log.pm
 lib/Git/Repository/Log/Iterator.pm
