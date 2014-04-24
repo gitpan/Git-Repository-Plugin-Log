@@ -1,8 +1,5 @@
 package Git::Repository::Log;
-{
-  $Git::Repository::Log::VERSION = '1.310';
-}
-
+$Git::Repository::Log::VERSION = '1.311';
 use strict;
 use warnings;
 use 5.006;
@@ -80,7 +77,7 @@ Git::Repository::Log - Class representing git log data
 
 =head1 VERSION
 
-version 1.310
+version 1.311
 
 =head1 SYNOPSIS
 
@@ -95,7 +92,7 @@ version 1.310
 
 =head1 DESCRIPTION
 
-L<Git::Repository::Log> is a class whose instances reprensent
+L<Git::Repository::Log> is a class whose instances represent
 log items from a B<git log> stream.
 
 =head1 CONSTRUCTOR
@@ -103,7 +100,7 @@ log items from a B<git log> stream.
 This method shouldn't be used directly. L<Git::Repository::Log::Iterator>
 should be the preferred way to create L<Git::Repository::Log> objects.
 
-=head2 new( @args )
+=head2 new
 
 Create a new L<Git::Repository::Log> instance, using the list of key/values
 passed as parameters. The supported keys are (from the output of

@@ -1,8 +1,5 @@
 package Git::Repository::Log::Iterator;
-{
-  $Git::Repository::Log::Iterator::VERSION = '1.310';
-}
-
+$Git::Repository::Log::Iterator::VERSION = '1.311';
 use strict;
 use warnings;
 use 5.006;
@@ -85,7 +82,7 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 
 =head1 VERSION
 
-version 1.310
+version 1.311
 
 =head1 SYNOPSIS
 
@@ -110,7 +107,9 @@ L<Git::Repository::Log> objects represening each log item.
 
 =head1 METHODS
 
-=head2 new( @args )
+=head2 new
+
+    my $iter = Git::Repository::Log::Iterator->new( @args );
 
 Create a new B<git log> stream from the parameter list in C<@args>
 and return a iterator on it.
@@ -128,7 +127,9 @@ When unsupported options are recognized in the parameter list, C<new()>
 will C<croak()> with a message advising to use C<< run( 'log' => ... ) >>
 to parse the output yourself.
 
-=head2 next()
+=head2 next
+
+    my $log = $iter->next;
 
 Return the next log item as a L<Git::Repository::Log> object,
 or nothing if the stream has ended.
