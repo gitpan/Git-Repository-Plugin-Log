@@ -1,5 +1,5 @@
 package Git::Repository::Log::Iterator;
-$Git::Repository::Log::Iterator::VERSION = '1.311';
+$Git::Repository::Log::Iterator::VERSION = '1.312';
 use strict;
 use warnings;
 use 5.006;
@@ -32,12 +32,24 @@ sub new {
     @cmd = ( 'log', '--pretty=raw', @cmd );
 
     # run the command (@cmd may hold a Git::Repository instance)
-    bless { cmd => Git::Repository::Command->new(@cmd) }, $class;
+    my $cmd = Git::Repository::Command->new(@cmd);
+    bless { cmd => $cmd, fh => $cmd->stdout }, $class;
+}
+
+sub new_from_fh {
+    my ( $class, $fh ) = @_;
+    bless { fh => $fh }, $class;
+}
+
+sub new_from_file {
+    my ( $class, $file ) = @_;
+    open my $fh, '<', $file or die "Can't open $file: $!";
+    bless { fh => $fh }, $class;
 }
 
 sub next {
     my ($self) = @_;
-    my $fh = $self->{cmd}->stdout;
+    my $fh = $self->{fh};
 
     # get records
     my @records = defined $self->{record} ? ( delete $self->{record} ) : ();
@@ -50,7 +62,15 @@ sub next {
     }
 
     # EOF
-    return $self->{cmd}->final_output() if !@records;
+    if ( !@records ) {
+        if ( $self->{cmd} ) {    # might catch some git errors
+            $self->{cmd}->final_output();
+        }
+        else {                   # just close the filehandle
+            $self->{fh}->close;
+        }
+        return;
+    }
 
     # the first two records are always the same, with --pretty=raw
     local $/ = "\n";
@@ -82,7 +102,7 @@ Git::Repository::Log::Iterator - Split a git log stream into records
 
 =head1 VERSION
 
-version 1.311
+version 1.312
 
 =head1 SYNOPSIS
 
@@ -126,6 +146,36 @@ the L<Git::Repository::Log> object. Decorations will be lost.
 When unsupported options are recognized in the parameter list, C<new()>
 will C<croak()> with a message advising to use C<< run( 'log' => ... ) >>
 to parse the output yourself.
+
+The object is really a blessed hash reference, with only two keys:
+
+=over 4
+
+=item cmd
+
+The L<Git::Repository::Command> object running the actual B<git log>
+command. It might not be defined in some cases (see below L</new_from_fh>
+and L</new_from_file>).
+
+=item fh
+
+The filehandle from which the output of B<git log> is actually read.
+This is the only attribute needed to run the L</next> method.
+
+=back
+
+=head2 new_from_fh
+
+This constructor makes it possible to provide the filehandle directly.
+
+The C<cmd> key is not defined when using this constructor.
+
+=head2 new_from_file
+
+This constructor makes it possible to provide a filename that will be
+C<open()>ed to produce a filehandle to read the log stream from.
+
+The C<cmd> key is not defined when using this constructor.
 
 =head2 next
 
